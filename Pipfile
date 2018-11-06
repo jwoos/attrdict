@@ -9,7 +9,6 @@ name = "pypi"
 coverage = "*"
 "flake8" = "*"
 nose = "*"
-python-coveralls = "*"
 tox = "*"
 tox-pipenv = "*"
 
