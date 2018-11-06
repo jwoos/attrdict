@@ -5,7 +5,6 @@ from abc import ABCMeta, abstractmethod
 from collections import Mapping, MutableMapping, Sequence
 import re
 
-import six
 
 from attrdict.merge import merge
 
@@ -13,8 +12,7 @@ from attrdict.merge import merge
 __all__ = ['Attr', 'MutableAttr']
 
 
-@six.add_metaclass(ABCMeta)
-class Attr(Mapping):
+class Attr(Mapping, metaclass=ABCMeta):
     """
     A mixin class for a mapping that allows for attribute-style access
     of values.
@@ -126,7 +124,7 @@ class Attr(Mapping):
         if isinstance(obj, Mapping):
             obj = self._constructor(obj, self._configuration())
         elif (isinstance(obj, Sequence) and
-              not isinstance(obj, (six.string_types, six.binary_type))):
+              not isinstance(obj, (str, bytes))):
             sequence_type = getattr(self, '_sequence_type', None)
 
             if sequence_type:
@@ -147,14 +145,13 @@ class Attr(Mapping):
             'register').
         """
         return (
-            isinstance(key, six.string_types) and
+            isinstance(key, str) and
             re.match('^[A-Za-z][A-Za-z0-9_]*$', key) and
             not hasattr(cls, key)
         )
 
 
-@six.add_metaclass(ABCMeta)
-class MutableAttr(Attr, MutableMapping):
+class MutableAttr(Attr, MutableMapping, metaclass=ABCMeta):
     """
     A mixin class for a mapping that allows for attribute-style access
     of values.

@@ -10,6 +10,8 @@ coverage = "*"
 "flake8" = "*"
 nose = "*"
 python-coveralls = "*"
+tox = "*"
+tox-pipenv = "*"
 
 [requires]
 python_version = "3.7"

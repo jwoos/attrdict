@@ -3,8 +3,6 @@ A dict that implements MutableAttr.
 """
 from attrdict.mixins import MutableAttr
 
-import six
-
 
 __all__ = ['AttrDict']
 
@@ -45,7 +43,7 @@ class AttrDict(dict, MutableAttr):
         self._setattr('_allow_invalid_attributes', allow_invalid_attributes)
 
     def __repr__(self):
-        return six.u('AttrDict({contents})').format(
+        return 'AttrDict({contents})'.format(
             contents=super(AttrDict, self).__repr__()
         )
 

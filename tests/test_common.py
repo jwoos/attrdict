@@ -10,7 +10,6 @@ from sys import version_info
 
 from nose.tools import (assert_equals, assert_not_equals,
                         assert_true, assert_false, assert_raises)
-import six
 
 from attrdict.mixins import Attr
 
@@ -186,7 +185,7 @@ def item_access(options):
         {
             'foo': 'bar',
             '_lorem': 'ipsum',
-            six.u('👻'): 'boo',
+            '👻': 'boo',
             3: 'three',
             'get': 'not the function',
             'sub': {'alpha': 'bravo'},
@@ -209,13 +208,10 @@ def item_access(options):
     assert_equals(mapping.get(3), 'three')
 
     # key that cannot be an attribute (sadly)
-    assert_equals(mapping[six.u('👻')], 'boo')
-    if six.PY2:
-        assert_raises(UnicodeEncodeError, getattr, mapping, six.u('👻'))
-    else:
-        assert_raises(AttributeError, getattr, mapping, six.u('👻'))
-    assert_equals(mapping(six.u('👻')), 'boo')
-    assert_equals(mapping.get(six.u('👻')), 'boo')
+    assert_equals(mapping['👻'], 'boo')
+    assert_raises(AttributeError, getattr, mapping, '👻')
+    assert_equals(mapping('👻'), 'boo')
+    assert_equals(mapping.get('👻'), 'boo')
 
     # key that represents a hidden attribute
     assert_equals(mapping['_lorem'], 'ipsum')
@@ -319,65 +315,14 @@ def iteration(options):
     actual_values = mapping.values()
     actual_items = mapping.items()
 
-    if six.PY2:
-        for collection in (actual_keys, actual_values, actual_items):
-            assert_true(isinstance(collection, list))
+    assert_true(isinstance(actual_keys, KeysView))
+    assert_equals(frozenset(actual_keys), expected_keys)
 
-        assert_equals(frozenset(actual_keys), expected_keys)
-        assert_equals(frozenset(actual_values), expected_values)
-        assert_equals(frozenset(actual_items), expected_items)
+    assert_true(isinstance(actual_values, ValuesView))
+    assert_equals(frozenset(actual_values), expected_values)
 
-        if options.iter_methods:
-            actual_keys = mapping.iterkeys()
-            actual_values = mapping.itervalues()
-            actual_items = mapping.iteritems()
-
-            for iterable in (actual_keys, actual_values, actual_items):
-                assert_false(isinstance(iterable, list))
-
-            assert_equals(frozenset(actual_keys), expected_keys)
-            assert_equals(frozenset(actual_values), expected_values)
-            assert_equals(frozenset(actual_items), expected_items)
-
-        if options.view_methods:
-            actual_keys = mapping.viewkeys()
-            actual_values = mapping.viewvalues()
-            actual_items = mapping.viewitems()
-
-            # These views don't actually extend from collections.*View
-            for iterable in (actual_keys, actual_values, actual_items):
-                assert_false(isinstance(iterable, list))
-
-            assert_equals(frozenset(actual_keys), expected_keys)
-            assert_equals(frozenset(actual_values), expected_values)
-            assert_equals(frozenset(actual_items), expected_items)
-
-            # What happens if mapping isn't a dict
-            from attrdict.mapping import AttrMap
-
-            mapping = options.constructor(AttrMap(raw))
-
-            actual_keys = mapping.viewkeys()
-            actual_values = mapping.viewvalues()
-            actual_items = mapping.viewitems()
-
-            # These views don't actually extend from collections.*View
-            for iterable in (actual_keys, actual_values, actual_items):
-                assert_false(isinstance(iterable, list))
-
-            assert_equals(frozenset(actual_keys), expected_keys)
-            assert_equals(frozenset(actual_values), expected_values)
-            assert_equals(frozenset(actual_items), expected_items)
-
-    else:  # methods are actually views
-        assert_true(isinstance(actual_keys, KeysView))
-        assert_equals(frozenset(actual_keys), expected_keys)
-
-        assert_true(isinstance(actual_values, ValuesView))
-        assert_equals(frozenset(actual_values), expected_values)
-
-        assert_true(isinstance(actual_items, ItemsView))
-        assert_equals(frozenset(actual_items), expected_items)
+    assert_true(isinstance(actual_items, ItemsView))
+    assert_equals(frozenset(actual_items), expected_items)
 
     # make sure empty iteration works
     assert_equals(tuple(options.constructor().items()), ())

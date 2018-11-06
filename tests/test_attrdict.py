@@ -3,7 +3,6 @@
 Tests for the AttrDict class.
 """
 from nose.tools import assert_equals, assert_false
-from six import PY2
 
 
 def test_init():
@@ -115,11 +114,10 @@ def test_repr():
     )
 
 
-if not PY2:
-    def test_has_key():
-        """
-        The now-depricated has_keys method
-        """
-        from attrdict.dictionary import AttrDict
+def test_has_key():
+    """
+    The now-depricated has_keys method
+    """
+    from attrdict.dictionary import AttrDict
 
-        assert_false(hasattr(AttrDict(), 'has_key'))
+    assert_false(hasattr(AttrDict(), 'has_key'))
