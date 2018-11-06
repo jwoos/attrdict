@@ -1,3 +1,7 @@
+Version 3 and above
+Copyright (c) 2018 Jun Woo Shin
+
+Version 2 and below
 Copyright (c) 2013 Brendan Curran-Johnson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

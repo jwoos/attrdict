@@ -2,7 +2,6 @@
 Tests for the AttrDefault class.
 """
 from nose.tools import assert_equals, assert_raises
-from six import PY2
 
 
 def test_method_missing():
@@ -36,17 +35,14 @@ def test_repr():
 
     assert_equals(repr(AttrDefault(None)), "AttrDefault(None, False, {})")
 
-    # list's repr changes between python 2 and python 3
-    type_or_class = 'type' if PY2 else 'class'
-
     assert_equals(
         repr(AttrDefault(list)),
-        type_or_class.join(("AttrDefault(<", " 'list'>, False, {})"))
+        'class'.join(("AttrDefault(<", " 'list'>, False, {})"))
     )
 
     assert_equals(
         repr(AttrDefault(list, {'foo': 'bar'}, pass_key=True)),
-        type_or_class.join(
+        'class'.join(
             ("AttrDefault(<", " 'list'>, True, {'foo': 'bar'})")
         )
     )

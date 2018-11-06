@@ -3,8 +3,6 @@ A subclass of MutableAttr that has defaultdict support.
 """
 from collections import Mapping
 
-import six
-
 from attrdict.mixins import MutableAttr
 
 
@@ -87,9 +85,7 @@ class AttrDefault(MutableAttr):
         """
         Return a string representation of the object.
         """
-        return six.u(
-            "AttrDefault({default_factory}, {pass_key}, {mapping})"
-        ).format(
+        return "AttrDefault({default_factory}, {pass_key}, {mapping})".format(
             default_factory=repr(self._default_factory),
             pass_key=repr(self._pass_key),
             mapping=repr(self._mapping),
